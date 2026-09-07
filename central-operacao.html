@@ -1,0 +1,927 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *,*::before,*::after{box-sizing:border-box}
+  :root{
+    --bg:#ececeb; --panel:#fafafa; --panel2:#ffffff; --line:#dcdcd9; --line2:#e6e6e3;
+    --ink:#101010; --ink2:#5b5b58; --ink3:#8e8e8a;
+    --ok:#2f6b4c; --warn:#8a6414; --bad:#9c342c; --mute:#a9a9a4;
+    --r:14px;
+  }
+  #app{
+    font-family:Inter,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg); color:var(--ink); min-height:100vh;
+    padding:22px 26px 70px; font-size:13.5px; line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app *{font-variant-numeric:tabular-nums}
+  h1,h2,h3,p,ul,ol{margin:0}
+  button{font:inherit;color:inherit;cursor:pointer}
+  input,select,textarea{font:inherit;color:inherit}
+
+  /* ---------- topo ---------- */
+  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:26px}
+  .seg{display:flex;background:#e3e3e1;border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
+  .seg button{border:0;background:transparent;padding:7px 15px;border-radius:999px;font-size:12.5px;font-weight:500;color:var(--ink2);white-space:nowrap}
+  .seg button:hover{color:var(--ink)}
+  .seg button.on{background:var(--ink);color:#fff;font-weight:600}
+  .pill{border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:8px 15px;font-size:12.5px;font-weight:500}
+  .pill:hover{border-color:#c3c3bf}
+  .pill.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .spacer{flex:1}
+  .saveflag{font-size:11.5px;color:var(--ink3);min-width:74px;text-align:right}
+
+  .eyebrow{font-size:10px;letter-spacing:.16em;color:var(--ink3);font-weight:600;text-transform:uppercase}
+  h1.title{font-size:44px;font-weight:800;letter-spacing:-.035em;line-height:1.02;margin:6px 0 6px}
+  .sub{color:var(--ink2);font-size:13.5px}
+  .head{margin-bottom:24px}
+
+  /* ---------- hero stats ---------- */
+  .hero{border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);margin-bottom:12px}
+  .hero > div{padding:20px 26px;border-right:1px solid var(--line)}
+  .hero > div:last-child{border-right:0}
+  .hero .k{font-size:12.5px;color:var(--ink2);margin-bottom:8px}
+  .hero .v{font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1.05}
+  .hero .n{font-size:12px;color:var(--ink3);margin-top:8px}
+  .note{font-size:12px;color:var(--ink3);margin:0 2px 16px}
+
+  /* ---------- chips ---------- */
+  .chips{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:26px}
+  .chip{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px 18px}
+  .chip .l{font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+  .chip .v{font-size:30px;font-weight:700;letter-spacing:-.03em;margin:10px 0 6px}
+  .chip .n{font-size:11.5px;color:var(--ink3)}
+
+  /* ---------- blocos ---------- */
+  .block{margin-bottom:30px}
+  .blockhead{display:flex;align-items:baseline;gap:12px;margin-bottom:12px}
+  .blockhead h2{font-size:16px;font-weight:700;letter-spacing:-.02em}
+  .blockhead .hint{font-size:11.5px;color:var(--ink3);margin-left:auto;text-align:right}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+
+  .health{height:9px;border-radius:6px;overflow:hidden;display:flex;background:#dedeDB;margin:2px 0 12px}
+  .health i{display:block;height:100%}
+  .legend{display:flex;flex-wrap:wrap;gap:18px;font-size:11.5px;color:var(--ink2)}
+  .legend span{display:flex;align-items:center;gap:7px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--mute);flex:none}
+
+  /* ---------- linhas ---------- */
+  .rows{display:flex;flex-direction:column;gap:8px}
+  .row{background:var(--panel2);border:1px solid var(--line2);border-radius:12px;padding:14px 18px;display:grid;gap:14px;align-items:center}
+  .row.r5{grid-template-columns:minmax(160px,1.6fr) 1fr 1fr 1fr auto}
+  .row.r4{grid-template-columns:minmax(160px,1.8fr) 1fr 1fr auto}
+  .row.r3{grid-template-columns:minmax(160px,2fr) 1fr auto}
+  .row:hover{border-color:#cfcfcb}
+  .row.flag{border-color:#c9bfbf;background:#fff}
+  .cell .l{font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink3);font-weight:600;margin-bottom:3px}
+  .cell .v{font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+  .cell .v.soft{color:var(--ink3);font-weight:500}
+  .name{font-size:15px;font-weight:700;letter-spacing:-.015em;display:flex;align-items:center;gap:8px}
+  .name small{display:block;font-size:11.5px;color:var(--ink3);font-weight:400;letter-spacing:0;margin-top:3px}
+  .end{display:flex;gap:6px;align-items:center;justify-content:flex-end}
+
+  .tag{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);background:#f2f2f0;white-space:nowrap}
+  .tag.ok{color:var(--ok);border-color:#c3d6ca;background:#eef4f0}
+  .tag.warn{color:var(--warn);border-color:#dcd0b4;background:#f7f2e6}
+  .tag.bad{color:var(--bad);border-color:#dcc4c1;background:#f8eeec}
+  .tag.ink{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  .mini{border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:6px 11px;font-size:11.5px;font-weight:500}
+  .mini:hover{border-color:#bdbdb8}
+  .mini.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .mini.ghost{background:transparent;border-color:transparent;color:var(--ink3)}
+  .mini.ghost:hover{color:var(--bad)}
+
+  .check{width:22px;height:22px;border-radius:7px;border:1.5px solid #c6c6c1;background:#fff;flex:none;display:grid;place-items:center;padding:0}
+  .check.on{background:var(--ink);border-color:var(--ink);color:#fff}
+  .check svg{width:12px;height:12px;display:none}
+  .check.on svg{display:block}
+
+  .empty{border:1px dashed #cdcdc8;border-radius:12px;padding:26px;text-align:center;color:var(--ink3);font-size:13px}
+  .empty b{display:block;color:var(--ink2);font-weight:600;margin-bottom:4px}
+
+  .prog{height:6px;background:#dedeDB;border-radius:6px;overflow:hidden;margin-top:10px}
+  .prog i{display:block;height:100%;background:var(--ink)}
+
+  /* ---------- modal ---------- */
+  .veil{position:fixed;inset:0;background:rgba(20,20,20,.34);display:grid;place-items:center;padding:20px;z-index:50}
+  .modal{background:var(--panel);border:1px solid var(--line);border-radius:18px;width:min(620px,100%);max-height:88vh;overflow:auto;padding:24px 26px 22px;box-shadow:0 24px 60px rgba(0,0,0,.18)}
+  .modal h3{font-size:20px;font-weight:800;letter-spacing:-.025em;margin-bottom:2px}
+  .modal .mdsub{font-size:12.5px;color:var(--ink3);margin-bottom:18px}
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .f{display:flex;flex-direction:column;gap:6px}
+  .f.wide{grid-column:1/-1}
+  .f label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+  .f input,.f select,.f textarea{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 12px;font-size:13.5px;width:100%}
+  .f input:focus,.f select:focus,.f textarea:focus{outline:2px solid #111;outline-offset:-1px;border-color:#111}
+  .f textarea{resize:vertical;min-height:74px}
+  .mdfoot{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;align-items:center}
+  .mdfoot .spacer{flex:1}
+
+  .detail{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 6px}
+  .detail div{background:#fff;border:1px solid var(--line2);border-radius:11px;padding:12px 14px}
+  .detail .l{font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+  .detail .v{font-size:17px;font-weight:700;letter-spacing:-.02em;margin-top:5px}
+  .hist{font-size:12.5px}
+  .hist div{display:flex;justify-content:space-between;padding:8px 2px;border-bottom:1px solid var(--line2)}
+
+  #toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-size:12.5px;font-weight:500;opacity:0;pointer-events:none;transition:.22s;z-index:60;font-family:Inter,sans-serif}
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+
+  .monthnav{display:flex;align-items:center;gap:8px;margin-left:auto}
+  .monthnav b{font-size:13px;font-weight:600;min-width:130px;text-align:center;text-transform:capitalize}
+
+  @media (max-width:980px){
+    #app{padding:16px 14px 60px}
+    h1.title{font-size:32px}
+    .hero{grid-template-columns:1fr}
+    .hero > div{border-right:0;border-bottom:1px solid var(--line);padding:16px 4px}
+    .hero > div:last-child{border-bottom:0}
+    .chips{grid-template-columns:repeat(2,1fr)}
+    .cols{grid-template-columns:1fr}
+    .row.r5,.row.r4,.row.r3{grid-template-columns:1fr 1fr;gap:12px}
+    .row .end{grid-column:1/-1;justify-content:flex-start}
+    .fields{grid-template-columns:1fr}
+    .detail{grid-template-columns:1fr 1fr}
+  }
+</style>
+
+<div id="app">
+  <div class="bar">
+    <div class="seg" id="tabs"></div>
+    <div class="spacer"></div>
+    <span class="saveflag" id="flag"></span>
+    <button class="pill" id="btnBackup">Backup</button>
+    <button class="pill dark" id="btnNovo">+ Novo</button>
+  </div>
+  <div id="view"></div>
+</div>
+<div id="modalRoot"></div>
+<div id="toast"></div>
+
+<script>
+(() => {
+  const KEY = 'operacao:v1';
+  const $ = s => document.querySelector(s);
+  const view = $('#view');
+
+  /* ---------------- estado ---------------- */
+  let S = {
+    clientes: [], tarefas: [], contas: [], pagamentos: {}, diario: {}, resultados: [],
+    config: { metaMeses: 12 },
+    ui: { tab: 'painel', mes: null }
+  };
+
+  const TABS = [
+    ['painel','Painel'], ['hoje','Hoje'], ['clientes','Clientes'],
+    ['financeiro','Financeiro'], ['resultados','Resultados']
+  ];
+
+  /* ---------------- utilidades ---------------- */
+  const pad = n => String(n).padStart(2,'0');
+  function today(){ const d=new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+  const HOJE = today();
+  const YM = HOJE.slice(0,7);
+  const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const nomeMes = ym => { const [y,m]=ym.split('-'); return `${MESES[+m-1]} de ${y}`; };
+  const brl = n => 'R$ ' + (Number(n)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const brlC = n => 'R$ ' + Math.round(Number(n)||0).toLocaleString('pt-BR');
+  const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const uid = () => Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
+  function shiftMes(ym, d){ let [y,m]=ym.split('-').map(Number); m+=d; while(m>12){m-=12;y++} while(m<1){m+=12;y--} return `${y}-${pad(m)}`; }
+  function diasNoMes(ym){ const [y,m]=ym.split('-').map(Number); return new Date(y,m,0).getDate(); }
+  function dataVenc(ym, dia){ return `${ym}-${pad(Math.min(dia||10, diasNoMes(ym)))}`; }
+  function diffDias(a,b){ return Math.round((new Date(a+'T00:00') - new Date(b+'T00:00'))/864e5); }
+  function mesesDeCasa(inicio){
+    if(!inicio) return 0;
+    const [y,m]=inicio.split('-').map(Number), d=new Date();
+    return Math.max(0,(d.getFullYear()-y)*12 + (d.getMonth()+1-m));
+  }
+  function tempoCasa(inicio){
+    const t = mesesDeCasa(inicio);
+    if(!inicio) return 'sem data de entrada';
+    if(t<1) return 'entrou este mês';
+    if(t<12) return t+(t===1?' mês':' meses')+' de casa';
+    const a=Math.floor(t/12), r=t%12;
+    return a+(a===1?' ano':' anos')+(r?` e ${r} m`:'')+' de casa';
+  }
+  const cli = id => S.clientes.find(c=>c.id===id);
+  const ativos = () => S.clientes.filter(c=>c.status==='ativo');
+
+  /* ---------------- persistência ---------------- */
+  let saveTimer, flagTimer;
+  function flag(txt){ const f=$('#flag'); f.textContent=txt; clearTimeout(flagTimer); flagTimer=setTimeout(()=>f.textContent='',2200); }
+  function toast(txt){ const t=$('#toast'); t.textContent=txt; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),1900); }
+
+  async function carregar(){
+    try{
+      const r = await window.storage.get(KEY);
+      if(r && r.value) S = Object.assign(S, JSON.parse(r.value));
+    }catch(e){ /* primeira vez: sem dados salvos */ }
+    S.ui = S.ui || {}; S.ui.tab = S.ui.tab || 'painel'; S.ui.mes = YM;
+    S.config = Object.assign({metaMeses:12}, S.config||{});
+  }
+  function salvar(){
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(async () => {
+      try{ await window.storage.set(KEY, JSON.stringify(S)); flag('salvo'); }
+      catch(e){ flag('falha ao salvar'); }
+    }, 350);
+  }
+  function commit(){ salvar(); render(); }
+
+  /* ---------------- regras de negócio ---------------- */
+  function cobranca(c, ym){
+    const k = c.id+'|'+ym;
+    const p = S.pagamentos[k] || {};
+    const venc = dataVenc(ym, c.diaVenc);
+    const valor = p.valor != null ? p.valor : (c.valor||0);
+    let status = 'pendente';
+    if(p.pago) status='pago';
+    else if(diffDias(venc, HOJE) < 0) status='atrasado';
+    return { key:k, cliente:c, venc, valor, status, pagoEm:p.pagoEm||null };
+  }
+  function cobrancasDoMes(ym){
+    return S.clientes.filter(c => c.status!=='inativo').map(c => cobranca(c, ym))
+      .sort((a,b)=> a.venc.localeCompare(b.venc));
+  }
+  function contasDoMes(ym){
+    return S.contas.filter(x => x.recorrente || (x.mes||'') === ym).map(x => {
+      const pago = !!(x.pagos && x.pagos[ym]);
+      const venc = dataVenc(ym, x.dia);
+      return { conta:x, venc, pago, atrasada: !pago && diffDias(venc,HOJE)<0 };
+    }).sort((a,b)=> a.venc.localeCompare(b.venc));
+  }
+  function feitoHoje(id){ return !!(S.diario[HOJE] && S.diario[HOJE][id] && S.diario[HOJE][id].feito); }
+  function marcarDia(id, nota){
+    S.diario[HOJE] = S.diario[HOJE] || {};
+    const at = S.diario[HOJE][id];
+    if(at && at.feito && nota===undefined) delete S.diario[HOJE][id];
+    else S.diario[HOJE][id] = { feito:true, hora:new Date().toTimeString().slice(0,5), nota: nota!==undefined?nota:(at?at.nota:'') };
+    commit();
+  }
+  function tarefaPendente(t){
+    if(t.repete==='nao') return !t.feito;
+    if(!t.feitoEm) return true;
+    if(t.repete==='diaria') return t.feitoEm !== HOJE;
+    if(t.repete==='semanal') return diffDias(HOJE, t.feitoEm) >= 7;
+    if(t.repete==='mensal') return t.feitoEm.slice(0,7) !== YM;
+    return !t.feito;
+  }
+  function ordenarTarefas(list){
+    return list.slice().sort((a,b)=>{
+      const pa=a.prio||2, pb=b.prio||2;
+      if(pa!==pb) return pa-pb;
+      const da=a.prazo||'9999', db=b.prazo||'9999';
+      return da.localeCompare(db);
+    });
+  }
+  function resultadoDe(id, ym){ return S.resultados.find(r=>r.clienteId===id && r.mes===ym); }
+  function precisaReajuste(c){
+    if(c.status!=='ativo' || !c.inicio) return false;
+    const base = c.ultimoReajuste || c.inicio;
+    return mesesDeCasa(base) >= (S.config.metaMeses||12);
+  }
+
+  /* ---------------- modais / formulários ---------------- */
+  function fechar(){ $('#modalRoot').innerHTML=''; }
+  function abrir(html, onMount){
+    $('#modalRoot').innerHTML = `<div class="veil" data-veil><div class="modal">${html}</div></div>`;
+    $('[data-veil]').addEventListener('mousedown', e => { if(e.target.dataset.veil!==undefined) fechar(); });
+    document.addEventListener('keydown', function k(e){ if(e.key==='Escape'){ fechar(); document.removeEventListener('keydown',k);} });
+    if(onMount) onMount();
+  }
+  function campo(f, v){
+    const val = v ?? f.def ?? '';
+    const w = f.wide ? ' wide' : '';
+    let input;
+    if(f.type==='select') input = `<select name="${f.k}">${f.opts.map(o=>`<option value="${o[0]}" ${String(val)===String(o[0])?'selected':''}>${esc(o[1])}</option>`).join('')}</select>`;
+    else if(f.type==='textarea') input = `<textarea name="${f.k}" placeholder="${esc(f.ph||'')}">${esc(val)}</textarea>`;
+    else input = `<input name="${f.k}" type="${f.type||'text'}" value="${esc(val)}" placeholder="${esc(f.ph||'')}" ${f.step?`step="${f.step}"`:''} ${f.min!=null?`min="${f.min}"`:''}>`;
+    return `<div class="f${w}"><label>${esc(f.label)}</label>${input}</div>`;
+  }
+  function form({titulo, sub, campos, valores={}, extra='', excluir, salvarTxt='Salvar'}, onSave){
+    abrir(`
+      <h3>${esc(titulo)}</h3>
+      <div class="mdsub">${esc(sub||'')}</div>
+      <div class="fields" id="ff">${campos.map(f=>campo(f, valores[f.k])).join('')}</div>
+      ${extra}
+      <div class="mdfoot">
+        ${excluir?`<button class="mini ghost" data-del>Excluir</button>`:''}
+        <div class="spacer"></div>
+        <button class="mini" data-cancel>Cancelar</button>
+        <button class="mini dark" data-ok>${esc(salvarTxt)}</button>
+      </div>`, () => {
+      const root = $('#modalRoot');
+      const coletar = () => {
+        const o = {};
+        root.querySelectorAll('#ff [name]').forEach(i => {
+          o[i.name] = i.type==='number' ? (i.value===''?null:Number(i.value)) : i.value.trim();
+        });
+        return o;
+      };
+      root.querySelector('[data-ok]').onclick = () => { onSave(coletar()); fechar(); };
+      root.querySelector('[data-cancel]').onclick = fechar;
+      const d = root.querySelector('[data-del]');
+      if(d) d.onclick = () => { if(confirm('Excluir definitivamente?')){ excluir(); fechar(); } };
+      const first = root.querySelector('#ff [name]'); if(first) first.focus();
+    });
+  }
+
+  const CAMPOS_CLIENTE = [
+    {k:'nome', label:'Cliente', wide:true, ph:'Nome que você usa no dia a dia'},
+    {k:'responsavel', label:'Contato', ph:'Quem responde por lá'},
+    {k:'status', label:'Situação', type:'select', opts:[['ativo','Ativo'],['pausado','Pausado'],['inativo','Encerrado']]},
+    {k:'valor', label:'Contrato mensal (R$)', type:'number', step:'0.01', min:0},
+    {k:'diaVenc', label:'Dia de vencimento', type:'number', min:1, def:10},
+    {k:'inicio', label:'Entrou em', type:'date'},
+    {k:'ultimoReajuste', label:'Último reajuste', type:'date'},
+    {k:'meta', label:'Meta de custo por resultado (R$)', type:'number', step:'0.01', min:0},
+    {k:'verba', label:'Verba de mídia do mês (R$)', type:'number', step:'0.01', min:0},
+    {k:'obs', label:'Anotações', type:'textarea', wide:true, ph:'Combinados, senhas de contexto, o que não pode esquecer'}
+  ];
+
+  function editarCliente(id){
+    const c = id ? cli(id) : null;
+    form({
+      titulo: c ? c.nome : 'Novo cliente',
+      sub: c ? tempoCasa(c.inicio) : 'Entra na sua rotina diária assim que ficar ativo.',
+      campos: CAMPOS_CLIENTE,
+      valores: c || {status:'ativo', diaVenc:10, inicio:HOJE},
+      excluir: c ? () => { S.clientes = S.clientes.filter(x=>x.id!==id); commit(); toast('Cliente excluído'); } : null
+    }, v => {
+      if(!v.nome) return toast('Dê um nome ao cliente');
+      if(c) Object.assign(c, v);
+      else S.clientes.push(Object.assign({id:uid()}, v));
+      commit(); toast(c?'Cliente atualizado':'Cliente adicionado');
+    });
+  }
+
+  function editarTarefa(id){
+    const t = id ? S.tarefas.find(x=>x.id===id) : null;
+    form({
+      titulo: t ? 'Editar tarefa' : 'Nova tarefa',
+      sub: 'A prioridade define a ordem em que ela aparece no seu dia.',
+      campos: [
+        {k:'titulo', label:'O que precisa ser feito', wide:true, ph:'Ex.: revisar criativos da Ma Cherie'},
+        {k:'prio', label:'Prioridade', type:'select', opts:[[1,'1 — Urgente'],[2,'2 — Importante'],[3,'3 — Quando der']]},
+        {k:'prazo', label:'Prazo', type:'date'},
+        {k:'clienteId', label:'Cliente', type:'select', opts:[['','Sem cliente']].concat(S.clientes.map(c=>[c.id,c.nome]))},
+        {k:'repete', label:'Repetição', type:'select', opts:[['nao','Não repete'],['diaria','Todo dia'],['semanal','Toda semana'],['mensal','Todo mês']]}
+      ],
+      valores: t || {prio:2, repete:'nao', prazo:HOJE},
+      excluir: t ? () => { S.tarefas = S.tarefas.filter(x=>x.id!==id); commit(); } : null
+    }, v => {
+      if(!v.titulo) return toast('Escreva a tarefa');
+      v.prio = Number(v.prio);
+      if(t) Object.assign(t, v);
+      else S.tarefas.push(Object.assign({id:uid(), feito:false, criadaEm:HOJE}, v));
+      commit();
+    });
+  }
+
+  function editarConta(id){
+    const x = id ? S.contas.find(c=>c.id===id) : null;
+    form({
+      titulo: x ? 'Editar conta' : 'Nova conta a pagar',
+      sub: 'Contas fixas e parcelas entram aqui e viram a sua projeção do mês.',
+      campos: [
+        {k:'nome', label:'Conta', wide:true, ph:'Ex.: parcela do notebook'},
+        {k:'valor', label:'Valor (R$)', type:'number', step:'0.01', min:0},
+        {k:'dia', label:'Dia de vencimento', type:'number', min:1, def:5},
+        {k:'categoria', label:'Tipo', type:'select', opts:[['fixa','Custo fixo'],['divida','Dívida / parcela'],['variavel','Eventual']]},
+        {k:'recorrente', label:'Repete todo mês', type:'select', opts:[['sim','Sim'],['nao','Não, só neste mês']]},
+        {k:'parcTotal', label:'Total de parcelas', type:'number', min:0, ph:'deixe vazio se não for parcelado'},
+        {k:'parcPagas', label:'Parcelas já pagas', type:'number', min:0}
+      ],
+      valores: x ? Object.assign({}, x, {recorrente: x.recorrente?'sim':'nao'}) : {dia:5, categoria:'fixa', recorrente:'sim'},
+      excluir: x ? () => { S.contas = S.contas.filter(c=>c.id!==id); commit(); } : null
+    }, v => {
+      if(!v.nome) return toast('Dê um nome à conta');
+      const dados = { nome:v.nome, valor:Number(v.valor)||0, dia:Number(v.dia)||5, categoria:v.categoria,
+                      recorrente: v.recorrente==='sim', parcTotal:v.parcTotal||null, parcPagas:v.parcPagas||0 };
+      if(!dados.recorrente) dados.mes = S.ui.mes;
+      if(x) Object.assign(x, dados);
+      else S.contas.push(Object.assign({id:uid(), pagos:{}}, dados));
+      commit();
+    });
+  }
+
+  function editarResultado(clienteId, mes){
+    const c = cli(clienteId), r = resultadoDe(clienteId, mes);
+    form({
+      titulo: c.nome,
+      sub: `Resultado de ${nomeMes(mes)}`,
+      campos: [
+        {k:'investido', label:'Investido em mídia (R$)', type:'number', step:'0.01', min:0},
+        {k:'resultados', label:'Resultados (leads, vendas…)', type:'number', min:0},
+        {k:'faturamento', label:'Faturamento informado (R$)', type:'number', step:'0.01', min:0},
+        {k:'nota', label:'Nota do mês (0 a 10)', type:'number', min:0, step:'0.5'},
+        {k:'obs', label:'O que aconteceu', type:'textarea', wide:true, ph:'Contexto que você vai querer lembrar na renovação'}
+      ],
+      valores: r || {},
+      excluir: r ? () => { S.resultados = S.resultados.filter(x=>x!==r); commit(); } : null
+    }, v => {
+      if(r) Object.assign(r, v);
+      else S.resultados.push(Object.assign({id:uid(), clienteId, mes}, v));
+      commit(); toast('Resultado registrado');
+    });
+  }
+
+  function fichaCliente(id){
+    const c = cli(id);
+    const meses = mesesDeCasa(c.inicio);
+    const hist = S.resultados.filter(r=>r.clienteId===id).sort((a,b)=>b.mes.localeCompare(a.mes)).slice(0,8);
+    const pagos = Object.entries(S.pagamentos).filter(([k,v])=>k.startsWith(id+'|') && v.pago);
+    const receita = pagos.reduce((s,[k,v])=> s + (v.valor!=null?v.valor:(c.valor||0)), 0);
+    const r = resultadoDe(id, S.ui.mes);
+    const cpa = r && r.resultados ? (r.investido||0)/r.resultados : null;
+    abrir(`
+      <h3>${esc(c.nome)}</h3>
+      <div class="mdsub">${esc(c.responsavel||'sem contato definido')} · ${tempoCasa(c.inicio)} · ${c.status==='ativo'?'ativo':c.status==='pausado'?'pausado':'encerrado'}</div>
+      <div class="detail">
+        <div><div class="l">Contrato</div><div class="v">${brlC(c.valor)}</div></div>
+        <div><div class="l">Já faturou</div><div class="v">${brlC(receita)}</div></div>
+        <div><div class="l">Custo/resultado</div><div class="v">${cpa!=null?brl(cpa):'—'}</div></div>
+      </div>
+      ${precisaReajuste(c) ? `<div class="note" style="color:var(--warn)">Sem reajuste há ${mesesDeCasa(c.ultimoReajuste||c.inicio)} meses. Vale conversar sobre o valor.</div>` : ''}
+      ${c.obs ? `<div class="note" style="color:var(--ink2)">${esc(c.obs)}</div>` : ''}
+      <div class="blockhead" style="margin-top:14px"><h2>Histórico de resultados</h2></div>
+      <div class="hist">
+        ${hist.length ? hist.map(h=>`<div><span>${nomeMes(h.mes)}</span><span>${h.resultados?h.resultados+' result. · ':''}${h.investido?brlC(h.investido):'sem investimento'}${h.nota?' · nota '+h.nota:''}</span></div>`).join('')
+          : '<div style="color:var(--ink3);border:0;padding:6px 2px">Nenhum mês registrado ainda.</div>'}
+      </div>
+      <div class="mdfoot">
+        <button class="mini" data-res>Registrar mês</button>
+        <div class="spacer"></div>
+        <button class="mini" data-cancel>Fechar</button>
+        <button class="mini dark" data-edit>Editar cadastro</button>
+      </div>`, () => {
+      const root = $('#modalRoot');
+      root.querySelector('[data-cancel]').onclick = fechar;
+      root.querySelector('[data-edit]').onclick = () => { fechar(); editarCliente(id); };
+      root.querySelector('[data-res]').onclick = () => { fechar(); editarResultado(id, S.ui.mes); };
+    });
+  }
+
+  /* ---------------- views ---------------- */
+  function statusTag(s){
+    if(s==='pago') return '<span class="tag ok">Pago</span>';
+    if(s==='atrasado') return '<span class="tag bad">Atrasado</span>';
+    return '<span class="tag">A receber</span>';
+  }
+
+  function painel(){
+    const ms = S.ui.mes;
+    const cobs = cobrancasDoMes(ms);
+    const previsto = cobs.reduce((s,x)=>s+x.valor,0);
+    const recebido = cobs.filter(x=>x.status==='pago').reduce((s,x)=>s+x.valor,0);
+    const atrasado = cobs.filter(x=>x.status==='atrasado');
+    const cts = contasDoMes(ms);
+    const aPagar = cts.reduce((s,x)=>s+(x.conta.valor||0),0);
+    const pagoContas = cts.filter(x=>x.pago).reduce((s,x)=>s+(x.conta.valor||0),0);
+    const at = ativos();
+    const feitos = at.filter(c=>feitoHoje(c.id)).length;
+    const tarefasAbertas = S.tarefas.filter(tarefaPendente);
+    const reajustes = S.clientes.filter(precisaReajuste);
+
+    const emDia = cobs.filter(x=>x.status==='pago').length;
+    const pend = cobs.filter(x=>x.status==='pendente').length;
+    const atr = atrasado.length;
+    const pausados = S.clientes.filter(c=>c.status==='pausado').length;
+    const tot = Math.max(1, emDia+pend+atr+pausados);
+    const seg = (n,cor)=> n?`<i style="width:${n/tot*100}%;background:${cor}"></i>`:'';
+
+    // fila do dia
+    const fila = [];
+    atrasado.forEach(x => fila.push({
+      nome:x.cliente.nome, sub:`vencia em ${x.venc.slice(8,10)}/${x.venc.slice(5,7)}`,
+      a:['Cobrança', brl(x.valor)], b:['Atraso', Math.abs(diffDias(x.venc,HOJE))+' dias'],
+      tag:'<span class="tag bad">Cobrar</span>', act:`pagar:${x.key}`, actTxt:'Marcar pago', flag:true
+    }));
+    ordenarTarefas(tarefasAbertas.filter(t=>t.prio===1 || (t.prazo && t.prazo<=HOJE))).slice(0,5).forEach(t => fila.push({
+      nome:t.titulo, sub: (t.clienteId&&cli(t.clienteId)?cli(t.clienteId).nome+' · ':'') + (t.prazo? (t.prazo<HOJE?'atrasada desde '+t.prazo.slice(8,10)+'/'+t.prazo.slice(5,7):'para hoje') : 'sem prazo'),
+      a:['Prioridade', 'P'+(t.prio||2)], b:['Tipo', t.repete==='nao'?'única':t.repete],
+      tag: t.prio===1?'<span class="tag bad">Urgente</span>':'<span class="tag warn">Hoje</span>',
+      act:`tfeito:${t.id}`, actTxt:'Concluir'
+    }));
+    at.filter(c=>!feitoHoje(c.id)).slice(0,6).forEach(c => fila.push({
+      nome:c.nome, sub:'campanhas ainda não revisadas hoje',
+      a:['Verba do mês', c.verba?brlC(c.verba):'sem verba no cadastro'],
+      b:['Meta CPR', c.meta?brl(c.meta):'sem meta'],
+      tag:'<span class="tag">Revisar</span>', act:`dia:${c.id}`, actTxt:'Marcar revisado'
+    }));
+    reajustes.slice(0,3).forEach(c => fila.push({
+      nome:c.nome, sub:tempoCasa(c.inicio)+' sem reajuste',
+      a:['Contrato', brlC(c.valor)], b:['Desde', (c.ultimoReajuste||c.inicio||'—')],
+      tag:'<span class="tag warn">Renegociar</span>', act:`ficha:${c.id}`, actTxt:'Abrir ficha'
+    }));
+
+    view.innerHTML = `
+      <div class="head">
+        <div class="eyebrow">Painel</div>
+        <h1 class="title">Central de Operação</h1>
+        <p class="sub">${at.length} clientes ativos · ${nomeMes(ms)} · ${feitos} de ${at.length} revisados hoje</p>
+      </div>
+
+      <div class="hero">
+        <div><div class="k">Receita prevista</div><div class="v">${brlC(previsto)}</div><div class="n">${cobs.length} cobranças no mês</div></div>
+        <div><div class="k">Já recebido</div><div class="v">${brlC(recebido)}</div><div class="n">faltam ${brlC(previsto-recebido)}${atr?` · ${atr} em atraso`:''}</div></div>
+        <div><div class="k">Sobra projetada</div><div class="v">${brlC(previsto-aPagar)}</div><div class="n">${brlC(aPagar)} em contas, ${brlC(pagoContas)} já pagos</div></div>
+      </div>
+      <p class="note">A sobra é o que fica se todo mundo pagar e todas as contas do mês forem quitadas.</p>
+
+      <div class="chips">
+        <div class="chip"><div class="l">Clientes</div><div class="v">${S.clientes.length}</div><div class="n">${at.length} ativos, ${pausados} pausados</div></div>
+        <div class="chip"><div class="l">Revisados hoje</div><div class="v">${feitos}</div><div class="n">de ${at.length} na rotina</div></div>
+        <div class="chip"><div class="l">Em atraso</div><div class="v">${atr}</div><div class="n">${brlC(atrasado.reduce((s,x)=>s+x.valor,0))} parados</div></div>
+        <div class="chip"><div class="l">Contas do mês</div><div class="v">${cts.length}</div><div class="n">${brlC(aPagar-pagoContas)} ainda a pagar</div></div>
+        <div class="chip"><div class="l">Tarefas abertas</div><div class="v">${tarefasAbertas.length}</div><div class="n">${tarefasAbertas.filter(t=>t.prio===1).length} urgentes</div></div>
+      </div>
+
+      <div class="block">
+        <div class="blockhead"><h2>Saúde da carteira</h2></div>
+        <div class="health">${seg(emDia,'#2f6b4c')}${seg(pend,'#8e8e8a')}${seg(atr,'#9c342c')}${seg(pausados,'#c9c9c4')}</div>
+        <div class="legend">
+          <span><i class="dot" style="background:#2f6b4c"></i>${emDia} pagaram</span>
+          <span><i class="dot" style="background:#8e8e8a"></i>${pend} a vencer</span>
+          <span><i class="dot" style="background:#9c342c"></i>${atr} em atraso</span>
+          <span><i class="dot" style="background:#c9c9c4"></i>${pausados} pausados</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="blockhead"><h2>Precisa de você hoje</h2>
+          <span class="hint">${fila.length} itens · cobrança primeiro, depois urgência, depois rotina</span></div>
+        <div class="rows">
+          ${fila.length ? fila.slice(0,12).map(f=>`
+            <div class="row r5 ${f.flag?'flag':''}">
+              <div class="name">${esc(f.nome)}<small>${esc(f.sub)}</small></div>
+              <div class="cell"><div class="l">${esc(f.a[0])}</div><div class="v ${/sem /.test(f.a[1])?'soft':''}">${esc(f.a[1])}</div></div>
+              <div class="cell"><div class="l">${esc(f.b[0])}</div><div class="v ${/sem /.test(f.b[1])?'soft':''}">${esc(f.b[1])}</div></div>
+              <div class="cell">${f.tag}</div>
+              <div class="end"><button class="mini" data-act="${f.act}">${esc(f.actTxt)}</button></div>
+            </div>`).join('')
+          : `<div class="empty"><b>Dia limpo.</b>Nada em atraso, nada urgente e todos os clientes já revisados.</div>`}
+        </div>
+      </div>
+
+      <div class="cols">
+        <div class="block">
+          <div class="blockhead"><h2>Próximos recebimentos</h2><span class="hint">15 dias</span></div>
+          <div class="rows">
+            ${cobs.filter(x=>x.status!=='pago' && diffDias(x.venc,HOJE)>=0 && diffDias(x.venc,HOJE)<=15).slice(0,6).map(x=>`
+              <div class="row r3">
+                <div class="name">${esc(x.cliente.nome)}<small>vence ${x.venc.slice(8,10)}/${x.venc.slice(5,7)} · em ${diffDias(x.venc,HOJE)} dias</small></div>
+                <div class="cell"><div class="l">Valor</div><div class="v">${brl(x.valor)}</div></div>
+                <div class="end"><button class="mini" data-act="pagar:${x.key}">Recebi</button></div>
+              </div>`).join('') || `<div class="empty"><b>Nada nos próximos 15 dias.</b>As cobranças do mês já foram quitadas ou vencem depois.</div>`}
+          </div>
+        </div>
+        <div class="block">
+          <div class="blockhead"><h2>Contas a pagar</h2><span class="hint">${nomeMes(ms)}</span></div>
+          <div class="rows">
+            ${cts.filter(x=>!x.pago).slice(0,6).map(x=>`
+              <div class="row r3 ${x.atrasada?'flag':''}">
+                <div class="name">${esc(x.conta.nome)}<small>${x.atrasada?'venceu':'vence'} ${x.venc.slice(8,10)}/${x.venc.slice(5,7)}${x.conta.parcTotal?` · parcela ${(x.conta.parcPagas||0)+1}/${x.conta.parcTotal}`:''}</small></div>
+                <div class="cell"><div class="l">Valor</div><div class="v">${brl(x.conta.valor)}</div></div>
+                <div class="end"><button class="mini" data-act="conta:${x.conta.id}">Paguei</button></div>
+              </div>`).join('') || `<div class="empty"><b>Nenhuma conta em aberto.</b>Cadastre custos fixos e parcelas na aba Financeiro.</div>`}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function hoje(){
+    const at = ativos();
+    const feitos = at.filter(c=>feitoHoje(c.id));
+    const pct = at.length ? Math.round(feitos.length/at.length*100) : 0;
+    const pend = ordenarTarefas(S.tarefas.filter(tarefaPendente));
+    const PRIO = {1:'<span class="tag bad">Urgente</span>',2:'<span class="tag warn">Importante</span>',3:'<span class="tag">Quando der</span>'};
+
+    view.innerHTML = `
+      <div class="head">
+        <div class="eyebrow">${new Date().toLocaleDateString('pt-BR',{weekday:'long', day:'2-digit', month:'long'})}</div>
+        <h1 class="title">Seu dia</h1>
+        <p class="sub">${at.length-feitos.length} clientes para revisar e ${pend.length} tarefas abertas</p>
+      </div>
+
+      <div class="block">
+        <div class="blockhead"><h2>Rotina de campanhas</h2>
+          <span class="hint">${feitos.length}/${at.length} revisados · ${pct}%</span></div>
+        <div class="prog"><i style="width:${pct}%"></i></div>
+        <div class="rows" style="margin-top:14px">
+          ${at.length ? at.slice().sort((a,b)=>feitoHoje(a.id)-feitoHoje(b.id)).map(c=>{
+            const f = feitoHoje(c.id), reg = (S.diario[HOJE]||{})[c.id]||{};
+            const r = resultadoDe(c.id, S.ui.mes);
+            const cpr = r && r.resultados ? (r.investido||0)/r.resultados : null;
+            const acima = cpr!=null && c.meta ? cpr > c.meta : false;
+            return `<div class="row r5" style="${f?'opacity:.55':''}">
+              <div class="name">
+                <button class="check ${f?'on':''}" data-act="dia:${c.id}" title="Marcar como revisado"><svg viewBox="0 0 12 12"><path d="M1 6l3.2 3.4L11 2.4" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+                <span>${esc(c.nome)}<small>${f?`revisado às ${reg.hora}${reg.nota?' · '+esc(reg.nota):''}`:(c.responsavel? esc(c.responsavel) : 'sem contato definido')}</small></span>
+              </div>
+              <div class="cell"><div class="l">Verba do mês</div><div class="v ${c.verba?'':'soft'}">${c.verba?brlC(c.verba):'sem verba'}</div></div>
+              <div class="cell"><div class="l">Custo por resultado</div><div class="v ${cpr==null?'soft':''}">${cpr!=null?brl(cpr):'sem dado'}</div></div>
+              <div class="cell">${acima?'<span class="tag bad">Acima da meta</span>':(cpr!=null?'<span class="tag ok">Dentro da meta</span>':'<span class="tag">Sem leitura</span>')}</div>
+              <div class="end">
+                <button class="mini" data-act="nota:${c.id}">Anotar</button>
+                <button class="mini" data-act="ficha:${c.id}">Ficha</button>
+              </div>
+            </div>`;
+          }).join('') : `<div class="empty"><b>Sua carteira está vazia.</b>Cadastre um cliente para ele entrar na rotina diária.</div>`}
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="blockhead"><h2>Tarefas por prioridade</h2>
+          <span class="hint">urgentes primeiro, depois prazo mais próximo</span></div>
+        <div class="rows">
+          ${pend.length ? pend.map(t=>{
+            const c = t.clienteId?cli(t.clienteId):null;
+            const atrasada = t.prazo && t.prazo < HOJE;
+            return `<div class="row r4 ${atrasada?'flag':''}">
+              <div class="name">
+                <button class="check" data-act="tfeito:${t.id}"><svg viewBox="0 0 12 12"><path d="M1 6l3.2 3.4L11 2.4" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+                <span>${esc(t.titulo)}<small>${c?esc(c.nome)+' · ':''}${t.prazo? (atrasada?'atrasada desde '+t.prazo.split('-').reverse().join('/'):'para '+t.prazo.split('-').reverse().join('/')) : 'sem prazo'}${t.repete!=='nao'?' · repete '+t.repete:''}</small></span>
+              </div>
+              <div class="cell">${PRIO[t.prio||2]}</div>
+              <div class="cell"><div class="l">Criada em</div><div class="v soft">${(t.criadaEm||'').split('-').reverse().join('/')}</div></div>
+              <div class="end"><button class="mini" data-act="tedit:${t.id}">Editar</button></div>
+            </div>`;
+          }).join('') : `<div class="empty"><b>Nenhuma tarefa aberta.</b>Use o botão Novo para registrar o que não pode escapar.</div>`}
+        </div>
+      </div>
+
+      ${feitos.length ? `<div class="block"><div class="blockhead"><h2>Concluído hoje</h2></div>
+        <div class="legend">${feitos.map(c=>`<span><i class="dot" style="background:#2f6b4c"></i>${esc(c.nome)}</span>`).join('')}</div></div>` : ''}`;
+  }
+
+  function clientes(){
+    const lista = S.clientes.slice().sort((a,b)=>{
+      const o = {ativo:0,pausado:1,inativo:2};
+      return (o[a.status]-o[b.status]) || (b.valor||0)-(a.valor||0);
+    });
+    const mrr = ativos().reduce((s,c)=>s+(c.valor||0),0);
+    const ticket = ativos().length ? mrr/ativos().length : 0;
+
+    view.innerHTML = `
+      <div class="head">
+        <div class="eyebrow">Carteira</div>
+        <h1 class="title">Clientes</h1>
+        <p class="sub">${brlC(mrr)} de receita recorrente · ticket médio ${brlC(ticket)}</p>
+      </div>
+      <div class="rows">
+        ${lista.length ? lista.map(c=>{
+          const cb = cobranca(c, S.ui.mes);
+          const reaj = precisaReajuste(c);
+          return `<div class="row r5 ${reaj?'flag':''}">
+            <div class="name">
+              <i class="dot" style="background:${c.status==='ativo'?'#2f6b4c':c.status==='pausado'?'#8a6414':'#c9c9c4'}"></i>
+              <span>${esc(c.nome)}<small>${esc(c.responsavel||'sem contato')} · ${tempoCasa(c.inicio)}</small></span>
+            </div>
+            <div class="cell"><div class="l">Contrato</div><div class="v ${c.valor?'':'soft'}">${c.valor?brl(c.valor):'sem valor'}</div></div>
+            <div class="cell"><div class="l">Vencimento</div><div class="v">dia ${c.diaVenc||10}</div></div>
+            <div class="cell">${c.status==='inativo'?'<span class="tag">Encerrado</span>':statusTag(cb.status)}${reaj?' <span class="tag warn">Reajuste</span>':''}</div>
+            <div class="end">
+              <button class="mini" data-act="ficha:${c.id}">Ficha</button>
+              <button class="mini" data-act="cedit:${c.id}">Editar</button>
+            </div>
+          </div>`;
+        }).join('') : `<div class="empty"><b>Nenhum cliente cadastrado.</b>Comece adicionando quem você atende hoje — nome, valor e dia de pagamento já bastam.</div>`}
+      </div>`;
+  }
+
+  function financeiro(){
+    const ms = S.ui.mes;
+    const cobs = cobrancasDoMes(ms);
+    const previsto = cobs.reduce((s,x)=>s+x.valor,0);
+    const recebido = cobs.filter(x=>x.status==='pago').reduce((s,x)=>s+x.valor,0);
+    const cts = contasDoMes(ms);
+    const aPagar = cts.reduce((s,x)=>s+(x.conta.valor||0),0);
+    const pagoC = cts.filter(x=>x.pago).reduce((s,x)=>s+(x.conta.valor||0),0);
+    const dividas = S.contas.filter(c=>c.categoria==='divida');
+    const saldoTotalDivida = dividas.reduce((s,c)=> s + (c.parcTotal? (c.parcTotal-(c.parcPagas||0))*(c.valor||0) : (c.valor||0)), 0);
+
+    view.innerHTML = `
+      <div class="head">
+        <div class="eyebrow">Financeiro</div>
+        <h1 class="title">Entra e sai</h1>
+        <p class="sub">${nomeMes(ms)} · caixa do mês ${brlC(recebido-pagoC)}</p>
+      </div>
+
+      <div class="hero">
+        <div><div class="k">Entrou</div><div class="v">${brlC(recebido)}</div><div class="n">de ${brlC(previsto)} previstos</div></div>
+        <div><div class="k">Saiu</div><div class="v">${brlC(pagoC)}</div><div class="n">de ${brlC(aPagar)} em contas do mês</div></div>
+        <div><div class="k">Dívida em aberto</div><div class="v">${brlC(saldoTotalDivida)}</div><div class="n">${dividas.length} parcelamentos em andamento</div></div>
+      </div>
+      <p class="note">Marcar recebimentos e pagamentos é manual — é isso que mantém o número confiável.</p>
+
+      <div class="block">
+        <div class="blockhead"><h2>Recebimentos</h2>
+          <div class="monthnav">
+            <button class="mini" data-act="mes:-1">←</button><b>${nomeMes(ms)}</b><button class="mini" data-act="mes:1">→</button>
+          </div></div>
+        <div class="rows">
+          ${cobs.length ? cobs.map(x=>`
+            <div class="row r5 ${x.status==='atrasado'?'flag':''}">
+              <div class="name">${esc(x.cliente.nome)}<small>${x.status==='pago'?'pago em '+(x.pagoEm||'').split('-').reverse().join('/'):'vence '+x.venc.split('-').reverse().join('/')}</small></div>
+              <div class="cell"><div class="l">Valor</div><div class="v">${brl(x.valor)}</div></div>
+              <div class="cell"><div class="l">Situação</div><div class="v">${x.status==='pago'?'Recebido':x.status==='atrasado'?Math.abs(diffDias(x.venc,HOJE))+' dias de atraso':'Em dia'}</div></div>
+              <div class="cell">${statusTag(x.status)}</div>
+              <div class="end">
+                <button class="mini ${x.status==='pago'?'':'dark'}" data-act="pagar:${x.key}">${x.status==='pago'?'Desfazer':'Marcar pago'}</button>
+                <button class="mini" data-act="valor:${x.key}">Valor</button>
+              </div>
+            </div>`).join('') : `<div class="empty"><b>Sem cobranças neste mês.</b>Elas são criadas a partir do contrato e do dia de vencimento de cada cliente.</div>`}
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="blockhead"><h2>Contas e dívidas</h2>
+          <span class="hint">${brlC(aPagar-pagoC)} ainda a pagar em ${nomeMes(ms)}</span></div>
+        <div class="rows">
+          ${cts.length ? cts.map(x=>`
+            <div class="row r5 ${x.atrasada?'flag':''}">
+              <div class="name">${esc(x.conta.nome)}<small>${x.conta.categoria==='divida'?'dívida':x.conta.categoria==='fixa'?'custo fixo':'eventual'} · vence dia ${x.conta.dia}${x.conta.parcTotal?` · ${(x.conta.parcPagas||0)}/${x.conta.parcTotal} pagas`:''}</small></div>
+              <div class="cell"><div class="l">Valor</div><div class="v">${brl(x.conta.valor)}</div></div>
+              <div class="cell"><div class="l">${x.conta.parcTotal?'Falta quitar':'Recorrência'}</div><div class="v ${x.conta.parcTotal?'':'soft'}">${x.conta.parcTotal? brlC((x.conta.parcTotal-(x.conta.parcPagas||0))*(x.conta.valor||0)) : (x.conta.recorrente?'todo mês':'só este mês')}</div></div>
+              <div class="cell">${x.pago?'<span class="tag ok">Pago</span>':x.atrasada?'<span class="tag bad">Atrasada</span>':'<span class="tag">Em aberto</span>'}</div>
+              <div class="end">
+                <button class="mini ${x.pago?'':'dark'}" data-act="conta:${x.conta.id}">${x.pago?'Desfazer':'Paguei'}</button>
+                <button class="mini" data-act="cnedit:${x.conta.id}">Editar</button>
+              </div>
+            </div>`).join('') : `<div class="empty"><b>Nenhuma conta cadastrada.</b>Inclua custos fixos e parcelas para ver quanto sobra de verdade.</div>`}
+        </div>
+      </div>`;
+  }
+
+  function resultados(){
+    const ms = S.ui.mes;
+    const at = S.clientes.filter(c=>c.status!=='inativo');
+    const linhas = at.map(c => ({c, r: resultadoDe(c.id, ms)}));
+    const invest = linhas.reduce((s,l)=>s+(l.r?.investido||0),0);
+    const res = linhas.reduce((s,l)=>s+(l.r?.resultados||0),0);
+    const fat = linhas.reduce((s,l)=>s+(l.r?.faturamento||0),0);
+    const registrados = linhas.filter(l=>l.r).length;
+
+    view.innerHTML = `
+      <div class="head">
+        <div class="eyebrow">Entrega</div>
+        <h1 class="title">Resultados</h1>
+        <p class="sub">${registrados} de ${at.length} clientes com o mês registrado</p>
+      </div>
+
+      <div class="hero">
+        <div><div class="k">Investido em mídia</div><div class="v">${brlC(invest)}</div><div class="n">somando todos os clientes do mês</div></div>
+        <div><div class="k">Resultados gerados</div><div class="v">${res.toLocaleString('pt-BR')}</div><div class="n">${res?'custo médio '+brl(invest/res):'nenhum resultado registrado'}</div></div>
+        <div><div class="k">Faturamento informado</div><div class="v">${fat?brlC(fat):'sem dado'}</div><div class="n">${fat&&invest?'retorno de '+(fat/invest).toFixed(1)+'x sobre a mídia':'informado por quem manda os números'}</div></div>
+      </div>
+
+      <div class="block">
+        <div class="blockhead"><h2>Mês a mês</h2>
+          <div class="monthnav">
+            <button class="mini" data-act="mes:-1">←</button><b>${nomeMes(ms)}</b><button class="mini" data-act="mes:1">→</button>
+          </div></div>
+        <div class="rows">
+          ${linhas.length ? linhas.map(({c,r})=>{
+            const cpr = r && r.resultados ? (r.investido||0)/r.resultados : null;
+            const acima = cpr!=null && c.meta ? cpr>c.meta : false;
+            const dif = acima ? Math.round((cpr/c.meta-1)*100) : (cpr!=null&&c.meta? Math.round((1-cpr/c.meta)*100) : null);
+            return `<div class="row r5 ${acima?'flag':''}">
+              <div class="name">${esc(c.nome)}<small>${tempoCasa(c.inicio)}${r&&r.nota?' · nota '+r.nota:''}</small></div>
+              <div class="cell"><div class="l">Investido</div><div class="v ${r?.investido?'':'soft'}">${r?.investido?brl(r.investido):'sem dado'}</div></div>
+              <div class="cell"><div class="l">Custo por resultado</div><div class="v ${cpr==null?'soft':''}">${cpr!=null?brl(cpr):'sem dado'}</div></div>
+              <div class="cell"><div class="l">Meta</div><div class="v ${c.meta?'':'soft'}">${c.meta?brl(c.meta):'sem meta'}</div></div>
+              <div class="end">
+                ${dif!=null?`<span class="tag ${acima?'bad':'ok'}">${dif}% ${acima?'acima':'abaixo'}</span>`:''}
+                <button class="mini" data-act="res:${c.id}">${r?'Editar mês':'Registrar'}</button>
+              </div>
+            </div>`;
+          }).join('') : `<div class="empty"><b>Sem clientes para registrar.</b>Cadastre a carteira primeiro.</div>`}
+        </div>
+      </div>`;
+  }
+
+  /* ---------------- ações ---------------- */
+  function acao(cmd){
+    const [tipo, arg] = cmd.split(':');
+    if(tipo==='dia'){ marcarDia(arg); return; }
+    if(tipo==='nota'){
+      const c = cli(arg), reg = (S.diario[HOJE]||{})[arg]||{};
+      form({titulo:c.nome, sub:'Anotação da revisão de hoje', campos:[{k:'nota', label:'O que você viu / ajustou', type:'textarea', wide:true, ph:'Ex.: pausei o criativo 3, CPA subiu 20%'}], valores:{nota:reg.nota||''}},
+        v => { S.diario[HOJE]=S.diario[HOJE]||{}; S.diario[HOJE][arg]={feito:true, hora:reg.hora||new Date().toTimeString().slice(0,5), nota:v.nota}; commit(); toast('Anotado'); });
+      return;
+    }
+    if(tipo==='ficha'){ fichaCliente(arg); return; }
+    if(tipo==='cedit'){ editarCliente(arg); return; }
+    if(tipo==='tedit'){ editarTarefa(arg); return; }
+    if(tipo==='cnedit'){ editarConta(arg); return; }
+    if(tipo==='res'){ editarResultado(arg, S.ui.mes); return; }
+    if(tipo==='mes'){ S.ui.mes = shiftMes(S.ui.mes, Number(arg)); render(); return; }
+    if(tipo==='tfeito'){
+      const t = S.tarefas.find(x=>x.id===arg);
+      if(t.repete==='nao') t.feito = true; else t.feitoEm = HOJE;
+      commit(); toast('Feito');
+      return;
+    }
+    if(tipo==='pagar'){
+      const p = S.pagamentos[arg] || {};
+      if(p.pago) S.pagamentos[arg] = Object.assign({}, p, {pago:false, pagoEm:null});
+      else S.pagamentos[arg] = Object.assign({}, p, {pago:true, pagoEm:HOJE});
+      commit(); toast(S.pagamentos[arg].pago?'Recebimento registrado':'Recebimento desfeito');
+      return;
+    }
+    if(tipo==='valor'){
+      const [id, ym] = arg.split('|'), c = cli(id), p = S.pagamentos[arg]||{};
+      form({titulo:c.nome, sub:`Valor cobrado em ${nomeMes(ym)}`, campos:[{k:'valor', label:'Valor deste mês (R$)', type:'number', step:'0.01', min:0, wide:true}], valores:{valor: p.valor!=null?p.valor:c.valor}},
+        v => { S.pagamentos[arg] = Object.assign({}, p, {valor: v.valor}); commit(); });
+      return;
+    }
+    if(tipo==='conta'){
+      const c = S.contas.find(x=>x.id===arg), ym = S.ui.mes;
+      c.pagos = c.pagos || {};
+      if(c.pagos[ym]){ delete c.pagos[ym]; if(c.parcTotal) c.parcPagas = Math.max(0,(c.parcPagas||0)-1); }
+      else { c.pagos[ym] = HOJE; if(c.parcTotal) c.parcPagas = Math.min(c.parcTotal,(c.parcPagas||0)+1); }
+      commit();
+      return;
+    }
+  }
+
+  function menuNovo(){
+    abrir(`
+      <h3>O que você quer registrar?</h3>
+      <div class="mdsub">Tudo fica salvo neste painel automaticamente.</div>
+      <div class="rows">
+        <div class="row r3"><div class="name">Cliente<small>entra na rotina diária e na cobrança do mês</small></div><div class="cell"></div><div class="end"><button class="mini dark" data-n="cliente">Adicionar</button></div></div>
+        <div class="row r3"><div class="name">Tarefa<small>com prioridade e prazo</small></div><div class="cell"></div><div class="end"><button class="mini dark" data-n="tarefa">Adicionar</button></div></div>
+        <div class="row r3"><div class="name">Conta a pagar<small>custo fixo, parcela ou gasto do mês</small></div><div class="cell"></div><div class="end"><button class="mini dark" data-n="conta">Adicionar</button></div></div>
+      </div>
+      <div class="mdfoot"><div class="spacer"></div><button class="mini" data-cancel>Fechar</button></div>`, () => {
+      const root = $('#modalRoot');
+      root.querySelector('[data-cancel]').onclick = fechar;
+      root.querySelectorAll('[data-n]').forEach(b => b.onclick = () => {
+        const t = b.dataset.n; fechar();
+        if(t==='cliente') editarCliente();
+        if(t==='tarefa') editarTarefa();
+        if(t==='conta') editarConta();
+      });
+    });
+  }
+
+  function backup(){
+    abrir(`
+      <h3>Backup dos seus dados</h3>
+      <div class="mdsub">Baixe um arquivo para guardar ou restaure um backup anterior.</div>
+      <div class="detail">
+        <div><div class="l">Clientes</div><div class="v">${S.clientes.length}</div></div>
+        <div><div class="l">Tarefas</div><div class="v">${S.tarefas.length}</div></div>
+        <div><div class="l">Meses com resultado</div><div class="v">${new Set(S.resultados.map(r=>r.mes)).size}</div></div>
+      </div>
+      <div class="mdfoot">
+        <button class="mini ghost" data-zerar>Apagar tudo</button>
+        <div class="spacer"></div>
+        <button class="mini" data-restore>Restaurar arquivo</button>
+        <button class="mini dark" data-down>Baixar backup</button>
+      </div>
+      <input type="file" accept="application/json" id="imp" style="display:none">`, () => {
+      const root = $('#modalRoot');
+      root.querySelector('[data-down]').onclick = () => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));
+        a.download = `operacao-${HOJE}.json`; a.click(); toast('Backup baixado');
+      };
+      root.querySelector('[data-restore]').onclick = () => root.querySelector('#imp').click();
+      root.querySelector('#imp').onchange = e => {
+        const f = e.target.files[0]; if(!f) return;
+        const rd = new FileReader();
+        rd.onload = () => { try{ S = Object.assign(S, JSON.parse(rd.result)); S.ui.mes=YM; fechar(); commit(); toast('Backup restaurado'); }catch(err){ toast('Arquivo inválido'); } };
+        rd.readAsText(f);
+      };
+      root.querySelector('[data-zerar]').onclick = () => {
+        if(confirm('Isso apaga clientes, tarefas, contas e resultados. Continuar?')){
+          S = {clientes:[],tarefas:[],contas:[],pagamentos:{},diario:{},resultados:[],config:S.config,ui:{tab:'painel',mes:YM}};
+          fechar(); commit(); toast('Dados apagados');
+        }
+      };
+    });
+  }
+
+  /* ---------------- render ---------------- */
+  function render(){
+    $('#tabs').innerHTML = TABS.map(([k,l])=>`<button data-tab="${k}" class="${S.ui.tab===k?'on':''}">${l}</button>`).join('');
+    ({painel, hoje, clientes, financeiro, resultados}[S.ui.tab] || painel)();
+  }
+
+  document.addEventListener('click', e => {
+    const tab = e.target.closest('[data-tab]');
+    if(tab){ S.ui.tab = tab.dataset.tab; salvar(); render(); return; }
+    const act = e.target.closest('[data-act]');
+    if(act){ acao(act.dataset.act); return; }
+  });
+  $('#btnNovo').onclick = menuNovo;
+  $('#btnBackup').onclick = backup;
+
+  carregar().then(render);
+})();
+</script>
